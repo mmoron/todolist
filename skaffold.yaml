@@ -1,0 +1,27 @@
+apiVersion: skaffold/v2beta1
+kind: Config
+metadata:
+  name: microservices
+build:
+  artifacts:
+  - image: webapp
+    context: webapp
+    sync:
+      infer:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.css'
+  - image: webapi
+    context: webapi\src\GraphQLApi
+deploy:
+  kubectl:
+    manifests:
+    - webapp/deployment.yaml
+    - webapi/src/GraphQLApi/deployment.yaml
+portForward:
+- resourceType: deployment
+  resourceName: webapp
+  port: 3000
+- resourceType: deployment
+  resourceName: webapi
+  port: 5000
