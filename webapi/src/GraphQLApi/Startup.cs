@@ -22,6 +22,12 @@ namespace GraphQLApi
             services.AddGraphQL(
                 SchemaBuilder.New()
                     .AddQueryType<GetTodosQuery>());
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,7 +38,9 @@ namespace GraphQLApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("MyPolicy");
             app.UseGraphQL();
+            app.UsePlayground();
         }
     }
 }
