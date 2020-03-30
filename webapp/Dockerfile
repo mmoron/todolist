@@ -1,6 +1,6 @@
 FROM node:12-alpine
 
-WORKDIR /app
+WORKDIR /webapp
 EXPOSE 3000
 CMD ["npm", "run", "start"]
 
