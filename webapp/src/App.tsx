@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { useQuery, gql } from '@apollo/client';
+import { Todo } from './Todo';
 
 const TODOS = gql`{
   todos {
@@ -24,12 +25,10 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <p>
+        <div>
           TODO:
-          {data.todos.map(({text}: any) => 
-            <div>* { text }</div>
-          )}
-        </p>
+          {data.todos.map((todo: {text: string, completed: boolean}) => <Todo {...todo}/>)}
+        </div>
       </header>
     </div>
   );
