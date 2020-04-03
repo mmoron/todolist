@@ -13,6 +13,10 @@ build:
       - '**/*.css'
   - image: webapi
     context: webapi\src\GraphQLApi
+    sync:
+      infer:
+      - '**/*.cs'
+      - '**/*.json'
 deploy:
   kubectl:
     manifests:

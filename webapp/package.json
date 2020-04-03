@@ -1,5 +1,5 @@
 {
-  "name": "skaffold-create-react-app",
+  "name": "todolist-frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

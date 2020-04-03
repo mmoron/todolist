@@ -25,3 +25,5 @@ Everything should be independently deployable.
   }
 }
 ```
+
+hot reloading should be working so whenever you change code respective service should be recompiled instantly without building new docker conatiner.

@@ -9,4 +9,8 @@ docker_build('webapp', './webapp/',
         sync('.', '/'),
     ]
 )
-docker_build('webapi', './webapi/src/GraphQLApi/')
+docker_build('webapi', './webapi/src/GraphQLApi/',
+    live_update=[
+        sync('.', '/'),
+    ]
+)
