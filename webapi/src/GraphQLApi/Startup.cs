@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GraphQLApi.Schema;
 using HotChocolate.AspNetCore;
+using GraphQLApi.Repositories;
 
 namespace GraphQLApi
 {
@@ -21,13 +22,16 @@ namespace GraphQLApi
         {
             services.AddGraphQL(
                 SchemaBuilder.New()
-                    .AddQueryType<GetTodosQuery>());
+                    .AddQueryType<GetTodosQuery>()
+                    .AddMutationType<TodoMutations>());
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }));
+
+            services.AddSingleton<ITodoRepository, TodoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
