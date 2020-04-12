@@ -8,7 +8,8 @@ import { gql } from "@apollo/client";
 const TODOS = gql`query getTodos {
     todos {
       completed,
-      text
+      text,
+      id
     }
   }
   `;

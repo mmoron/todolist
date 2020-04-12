@@ -37,5 +37,15 @@ namespace GraphQLApi.Repositories
 
             _todos[_todos.IndexOf(_todos.Single(x => x.Id == todo.Id))] = todo;
         }
+
+        public async Task<Todo> GetTodoAsync(Guid id)
+        {
+            Todo todo = _todos.SingleOrDefault(todo => todo.Id == id);
+            if (todo == null) 
+            {
+                throw new ArgumentException("Can't find todo with given id.", nameof(id));
+            }
+            return todo;
+        }
     }
 }

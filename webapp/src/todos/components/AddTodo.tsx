@@ -25,7 +25,7 @@ export const AddTodo = () => {
     }
 
     return <div>
-        <input type={'text'} value={currentText} onChange={onTextChanged}/>
+        <input type={'text'} value={currentText || ''} onChange={onTextChanged}/>
         <button onClick={onAddClick}>Add</button>
     </div>;
 }

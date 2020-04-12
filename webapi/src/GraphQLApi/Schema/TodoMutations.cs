@@ -8,11 +8,19 @@ namespace GraphQLApi.Schema
 {
     public class TodoMutations
     {
-        public async Task<AddTodoPayload> AddTodoAsync(AddTodoInput input, [Service]ITodoRepository todoRepository)
+        public async Task<TodoPayload> AddTodoAsync(AddTodoInput input, [Service]ITodoRepository todoRepository)
         {
             Todo newTodo = new Todo() { Text = input.Text, Completed = false, Id = Guid.NewGuid() };
             await todoRepository.AddTodoAsync(newTodo);
-            return new AddTodoPayload(newTodo);
+            return new TodoPayload(newTodo);
+        }
+
+        public async Task<TodoPayload> ToggleTodoCompleted(ToggleTodoCompletedInput input, [Service]ITodoRepository todoRepository)
+        {
+            Todo todo = await todoRepository.GetTodoAsync(input.Id);
+            todo.Completed = !todo.Completed;
+            await todoRepository.UpdateTodoAsync(todo);
+            return new TodoPayload(todo);
         }
     }
 }

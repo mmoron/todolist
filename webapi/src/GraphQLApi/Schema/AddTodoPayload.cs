@@ -2,11 +2,11 @@ using GraphQLApi.Schema.Models;
 
 namespace GraphQLApi.Schema
 {
-    public class AddTodoPayload
+    public class TodoPayload
     {
         public Todo Todo { get; }
 
-        public AddTodoPayload(Todo todo)
+        public TodoPayload(Todo todo)
         {
             Todo = todo;
         }
