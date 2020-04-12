@@ -1,6 +1,7 @@
 import React from 'react';
+import { Todo as TodoItem } from '../models/Todo';
 
-export function Todo({text, completed}: {text: string, completed: boolean}) {
+export const Todo = ({text, completed}: TodoItem) => {
     let style = {};
     if (completed) {
         style = {textDecoration: "line-through"};
