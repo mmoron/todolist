@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36D31C3D-A32C-4364-B38B-FC28E9E6925B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQLApi", "src\GraphQLApi\GraphQLApi.csproj", "{01952681-412D-4690-9A80-2FC94F69F769}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLApi", "src\GraphQLApi\GraphQLApi.csproj", "{01952681-412D-4690-9A80-2FC94F69F769}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kafka-stream-core", "src\kafka-stream-net\core\kafka-stream-core.csproj", "{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{01952681-412D-4690-9A80-2FC94F69F769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -32,8 +31,27 @@ Global
 		{01952681-412D-4690-9A80-2FC94F69F769}.Release|x64.Build.0 = Release|Any CPU
 		{01952681-412D-4690-9A80-2FC94F69F769}.Release|x86.ActiveCfg = Release|Any CPU
 		{01952681-412D-4690-9A80-2FC94F69F769}.Release|x86.Build.0 = Release|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Debug|x64.Build.0 = Debug|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Debug|x86.Build.0 = Debug|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Release|x64.ActiveCfg = Release|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Release|x64.Build.0 = Release|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Release|x86.ActiveCfg = Release|Any CPU
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{01952681-412D-4690-9A80-2FC94F69F769} = {36D31C3D-A32C-4364-B38B-FC28E9E6925B}
+		{73B02CEC-96FA-49B1-AFAF-0046F0B4C0FC} = {36D31C3D-A32C-4364-B38B-FC28E9E6925B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E4BDE5B-1321-45AB-B0AB-94D232012F48}
 	EndGlobalSection
 EndGlobal

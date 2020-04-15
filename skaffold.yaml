@@ -12,7 +12,7 @@ build:
       - '**/*.tsx'
       - '**/*.css'
   - image: webapi
-    context: webapi\src\GraphQLApi
+    context: webapi
     sync:
       infer:
       - '**/*.cs'
@@ -21,7 +21,7 @@ deploy:
   kubectl:
     manifests:
     - webapp/deployment.yaml
-    - webapi/src/GraphQLApi/deployment.yaml
+    - webapi/deployment.yaml
 portForward:
 - resourceType: deployment
   resourceName: webapp

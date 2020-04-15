@@ -9,10 +9,14 @@ EXPOSE 5000
 ENV ASPNETCORE_URLS=http://*:5000
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+
+WORKDIR /webapi/src/kafka-stream-net/core
+COPY ["src/kafka-stream-net/core", "."]
+
 WORKDIR /webapi/src/GraphQLApi
-COPY ["GraphQLApi.csproj", "."]
+COPY ["src/GraphQLApi/GraphQLApi.csproj", "."]
 RUN dotnet restore "GraphQLApi.csproj"
-COPY . .
+COPY ["src/GraphQLApi", "."]
 ENTRYPOINT dotnet watch run --no-restore --urls=http://+:5000
 # comment line above and uncomment below to turn off hot reloading
 # RUN dotnet build "GraphQLApi.csproj" --no-restore -c Debug -o /app/build

@@ -22,7 +22,7 @@ namespace GraphQLApi.Repositories
 
         public async Task AddTodoAsync(Todo todo)
         {
-            if (_todos.Any(x => x.Id == todo.Id)) {
+            if (TodoExists(todo.Id)) {
                 throw new ArgumentException("Todo with given id already exists.", nameof(todo));
             }
 
@@ -31,14 +31,14 @@ namespace GraphQLApi.Repositories
 
         public async Task UpdateTodoAsync(Todo todo)
         {
-            if (!_todos.Any(x => x.Id == todo.Id)) {
+            if (!TodoExists(todo.Id)) {
                 throw new ArgumentException("Can't find todo with given id.", nameof(todo));
             }
 
             _todos[_todos.IndexOf(_todos.Single(x => x.Id == todo.Id))] = todo;
         }
 
-        public async Task<Todo> GetTodoAsync(Guid id)
+        public Todo GetTodo(Guid id)
         {
             Todo todo = _todos.SingleOrDefault(todo => todo.Id == id);
             if (todo == null) 
@@ -46,6 +46,11 @@ namespace GraphQLApi.Repositories
                 throw new ArgumentException("Can't find todo with given id.", nameof(id));
             }
             return todo;
+        }
+
+        private bool TodoExists(Guid id)
+        {
+            return _todos.Any(x => x.Id == id);
         }
     }
 }

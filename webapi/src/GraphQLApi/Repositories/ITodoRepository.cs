@@ -9,7 +9,7 @@ namespace GraphQLApi.Repositories
     {
         IQueryable<Todo> GetTodos();
 
-        Task<Todo> GetTodoAsync(Guid id);
+        Todo GetTodo(Guid id);
 
         Task AddTodoAsync(Todo todo); 
 

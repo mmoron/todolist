@@ -17,7 +17,7 @@ namespace GraphQLApi.Schema
 
         public async Task<TodoPayload> ToggleTodoCompleted(ToggleTodoCompletedInput input, [Service]ITodoRepository todoRepository)
         {
-            Todo todo = await todoRepository.GetTodoAsync(input.Id);
+            Todo todo = todoRepository.GetTodo(input.Id);
             todo.Completed = !todo.Completed;
             await todoRepository.UpdateTodoAsync(todo);
             return new TodoPayload(todo);

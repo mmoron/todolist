@@ -1,2 +1,5 @@
 .vscode
+.vs
+lib
 rename_comitter.sh
+secrets.json
