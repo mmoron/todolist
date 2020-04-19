@@ -1,25 +1,30 @@
 using System;
 using System.Threading.Tasks;
-using GraphQLApi.Repositories;
+using GraphQLApi.DataAccess;
 using GraphQLApi.Schema.Models;
-using HotChocolate;
 
 namespace GraphQLApi.Schema
 {
     public class TodoMutations
     {
-        public async Task<TodoPayload> AddTodoAsync(AddTodoInput input, [Service]ITodoRepository todoRepository)
+        private readonly Func<string, IAddTodoCommand> _addTodoCommandFactory;
+        Func<Guid, IToggleTodoCompletedCommand> _toggleTodoCompletedCommandFactory;
+
+        public TodoMutations(Func<string, IAddTodoCommand> addTodoCommandFactory, Func<Guid, IToggleTodoCompletedCommand> toggleTodoCompletedCommandFactory)
         {
-            Todo newTodo = new Todo() { Text = input.Text, Completed = false, Id = Guid.NewGuid() };
-            await todoRepository.AddTodoAsync(newTodo);
-            return new TodoPayload(newTodo);
+            _addTodoCommandFactory = addTodoCommandFactory;
+            _toggleTodoCompletedCommandFactory = toggleTodoCompletedCommandFactory;
         }
 
-        public async Task<TodoPayload> ToggleTodoCompleted(ToggleTodoCompletedInput input, [Service]ITodoRepository todoRepository)
+        public async Task<TodoPayload> AddTodoAsync(AddTodoInput input)
         {
-            Todo todo = todoRepository.GetTodo(input.Id);
-            todo.Completed = !todo.Completed;
-            await todoRepository.UpdateTodoAsync(todo);
+            Todo todo = await _addTodoCommandFactory(input.Text).Execute();
+            return new TodoPayload(todo);
+        }
+
+        public async Task<TodoPayload> ToggleTodoCompleted(ToggleTodoCompletedInput input)
+        {
+            Todo todo = await _toggleTodoCompletedCommandFactory(input.Id).Execute();
             return new TodoPayload(todo);
         }
     }

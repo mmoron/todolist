@@ -1,16 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using HotChocolate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using GraphQLApi.Schema;
 using HotChocolate.AspNetCore;
-using GraphQLApi.Repositories;
+using GraphQLApi.DataAccess;
+using GraphQLApi.DataAccess.Kafka;
+using GraphQLApi.Schema.Models;
 
 namespace GraphQLApi
 {
@@ -31,11 +29,18 @@ namespace GraphQLApi
                     .AllowAnyHeader();
             }));
 
-            services.AddSingleton<ITodoRepository, KafkaTodoRepository>();
+            services.AddSingleton<ITodoByIdQuery, KafkaTodoRepository>();
+            services.AddSingleton<IAllTodosQuery, KafkaTodoRepository>();
+            services.AddSingleton<KafkaProducerFactory>();
+            services.AddSingleton<KafkaTodoProducer>();
+            services.AddSingleton<TodosStateStoreAccessor>();
+            services.AddSingleton<TodosStream>();
+            services.AddTransient<Func<string, IAddTodoCommand>>(container => text => new KafkaAddTodoCommand(container.GetService<KafkaTodoProducer>(), text));
+            services.AddTransient<Func<Guid, IToggleTodoCompletedCommand>>(container => id => new KafkaToggleTodoCompletedCommand(container.GetService<KafkaTodoProducer>(), container.GetService<ITodoByIdQuery>(), id));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, TodosStream todosStream)
         {
             if (env.IsDevelopment())
             {
@@ -45,6 +50,9 @@ namespace GraphQLApi
             app.UseCors("MyPolicy");
             app.UseGraphQL();
             app.UsePlayground();
+
+            // Start Kafka streams
+            todosStream.Start();
         }
     }
 }

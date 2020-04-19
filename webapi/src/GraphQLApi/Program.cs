@@ -21,6 +21,7 @@ namespace GraphQLApi
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     builder.AddJsonFile("secrets.json", optional: true, reloadOnChange: true);
+                    builder.AddJsonFile("kafka-topics.json", optional: false, reloadOnChange: true);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

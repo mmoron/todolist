@@ -1,5 +1,5 @@
 using System.Linq;
-using GraphQLApi.Repositories;
+using GraphQLApi.DataAccess;
 using GraphQLApi.Schema.Models;
 using HotChocolate;
 
@@ -7,15 +7,15 @@ namespace GraphQLApi.Schema
 {
     public class GetTodosQuery
     {
-        public IQueryable<Todo> GetTodos(bool? completed, [Service]ITodoRepository todoRepository) {
-            return todoRepository.GetTodos()
+        public IQueryable<Todo> GetTodos(bool? completed, [Service]IAllTodosQuery allTodosQuery) {
+            return allTodosQuery.AllTodos()
                 .Where(x => completed == null || x.Completed == completed)
                 .AsQueryable()
                 .OrderBy(x => x.Completed);
         }
 
-        public IQueryable<Todo> GetCompletedTodos([Service]ITodoRepository todoRepository) {
-            return GetTodos(true, todoRepository);
+        public IQueryable<Todo> GetCompletedTodos([Service]IAllTodosQuery allTodosQuery) {
+            return GetTodos(true, allTodosQuery);
         }
     }
 }

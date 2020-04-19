@@ -16,7 +16,7 @@ Everything should be independently deployable.
 
 2. make sure you have a running kubernetes cluster you can use (on Windows docker for windows with kubernetes turned on will do)
 
-3. webapi requires a kafka cluster for todos storage. create a `secrets.json` file in webapi\src\GraphQLApi folder and add configuration for it:
+3. webapi requires a kafka cluster for todos storage. Create a `secrets.json` file in webapi\src\GraphQLApi folder and add configuration for it:
 ```
 {
   "KafkaSecrets": {
@@ -27,6 +27,8 @@ Everything should be independently deployable.
   }
 }
 ```
+Also change names of kafka topics in `kafka-topics.json`.
+
 I plan to add a local kafka cluster to kubernetes, but it is not done for now
 
 4. install skaffold (https://skaffold.dev/) or tilt (https://tilt.dev/)
