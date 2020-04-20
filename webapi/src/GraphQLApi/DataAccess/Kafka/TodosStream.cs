@@ -1,9 +1,9 @@
 ﻿using Confluent.Kafka;
 using GraphQLApi.Schema.Models;
-using kafka_stream_core;
-using kafka_stream_core.SerDes;
-using kafka_stream_core.Stream;
 using Microsoft.Extensions.Configuration;
+using Streamiz.Kafka.Net;
+using Streamiz.Kafka.Net.SerDes;
+using Streamiz.Kafka.Net.Stream;
 using System;
 using System.Text.Json;
 using System.Threading;
