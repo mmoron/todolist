@@ -1,11 +1,11 @@
 ﻿using Confluent.Kafka;
-using GraphQLApi.Schema.Models;
 using Microsoft.Extensions.Configuration;
 using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.SerDes;
+using Streamiz.Kafka.Net.State;
 using Streamiz.Kafka.Net.Stream;
+using Streamiz.Kafka.Net.Table;
 using System;
-using System.Text.Json;
 using System.Threading;
 
 namespace GraphQLApi.DataAccess.Kafka
@@ -16,15 +16,15 @@ namespace GraphQLApi.DataAccess.Kafka
         private readonly string saslUsername;
         private readonly string saslPassword;
         private readonly string bootstrapServers;
-        private readonly TodosStateStoreAccessor _todosStateStoreAccessor;
+        private KafkaStream? _stream;
+        private ReadOnlyKeyValueStore<string, ValueAndTimestamp<string>>? _store;
 
-        public TodosStream(IConfiguration configuration, TodosStateStoreAccessor todosStateStoreAccessor)
+        public TodosStream(IConfiguration configuration)
         {
             topic = configuration["KafkaTopics:Todos"];
             saslUsername = configuration["KafkaSecrets:Username"];
             saslPassword = configuration["KafkaSecrets:Password"];
             bootstrapServers = configuration["KafkaSecrets:BootstrapServers"];
-            this._todosStateStoreAccessor = todosStateStoreAccessor;
         }
 
         public void Start()
@@ -45,16 +45,42 @@ namespace GraphQLApi.DataAccess.Kafka
 
             StreamBuilder builder = new StreamBuilder();
 
-            builder.Stream<string, string>(topic).Foreach((key, value) =>
-            {
-                Todo todo = JsonSerializer.Deserialize<Todo>(value);
-                _todosStateStoreAccessor.TodosDictionary[Guid.Parse(key)] = todo;
-            });
+            //builder.Stream<string, string>(topic).Foreach((key, value) =>
+            //{
+            //    value is of type string here not ValueAndTimestamp<string> so it differs from KStream state store value
+            //});
+
+            // TODO: this should be a global store I guess, but it is not supported in Streamiz.Kafka.Net yet
+            // for now we use topic with one partition to get all the data in one StreamTask
+            builder
+                // TODO: we need to provide serdes for key anc value as Streamiz.Kafka.Net tries to deserialize
+                // value with deserializer for ValueAndTimestamp<string> which is incorrect
+                .Table(topic, new StringSerDes(), new StringSerDes(), InMemory<string, string>.As("topics-store")
+                .WithCachingDisabled());
 
             Topology t = builder.Build();
-            KafkaStream stream = new KafkaStream(t, config);
+            _stream = new KafkaStream(t, config);
 
-            stream.Start(source.Token);
+            _stream.Start(source.Token);
+        }
+
+        // TODO: I'm quite sure .Store(...) should return ReadOnlyKeyValueStore<string, string>
+        // but for now it returns ReadOnlyKeyValueStore<string, ValueAndTimestamp<string>>
+        // will have to investigate
+        public ReadOnlyKeyValueStore<string, ValueAndTimestamp<string>> Store
+        {
+            get
+            {
+                if (_stream == null)
+                {
+                    throw new InvalidOperationException("Stream doesn't exist yet. Call Start() before getting Store.");
+                }
+                if (_store == null)
+                {
+                    _store = _stream.Store("topics-store", QueryableStoreTypes.TimestampedKeyValueStore<string, string>());
+                }
+                return _store;
+            }
         }
     }
 }

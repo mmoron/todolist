@@ -16,16 +16,17 @@ namespace GraphQLApi.DataAccess.Kafka
             _topic = configuration["KafkaTopics:Todos"];
 
             //TODO: producer is IDisposable.Dispose of it appropriately
-            _producer = producerFactory.CreateProducer<string, string>();
+            _producer = producerFactory.CreateProducer<string, string>().Build();
         }
 
         public async Task<DeliveryResult<string, string>> ProduceAsync(Todo todo)
         {
             return await _producer
-                .ProduceAsync(_topic, new Message<string, string> { 
-                    Key = todo.Id.ToString(), 
-                    Value = JsonSerializer.Serialize(todo) 
-                });
+               .ProduceAsync(_topic, new Message<string, string>
+               {
+                   Key = todo.Id.ToString(),
+                   Value = JsonSerializer.Serialize(todo)
+               });
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Linq;
 using GraphQLApi.Schema.Models;
 using System;
-using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace GraphQLApi.DataAccess.Kafka
 {
@@ -9,26 +9,27 @@ namespace GraphQLApi.DataAccess.Kafka
     // newly added todo was not yet picked up by a stream
     public class KafkaTodoRepository : ITodoByIdQuery, IAllTodosQuery
     {
-        private readonly TodosStateStoreAccessor _todosStateStoreAccessor;
+        private readonly TodosStream _todosStream;
 
-        public KafkaTodoRepository(IConfiguration configuration, TodosStateStoreAccessor todosStateStoreAccessor)
+        public KafkaTodoRepository(TodosStream todosStream)
         {
-            this._todosStateStoreAccessor = todosStateStoreAccessor;
+            this._todosStream = todosStream;
         }
 
         public IQueryable<Todo> AllTodos()
         {
-            return _todosStateStoreAccessor.TodosDictionary.Values.AsQueryable();
+            return this._todosStream
+                    .Store
+                    .All()
+                    .Select(x => JsonSerializer.Deserialize<Todo>(x.Value.Value))
+                    .AsQueryable() 
+                ?? Enumerable.Empty<Todo>().AsQueryable();
         }
 
         public Todo GetTodo(Guid id)
         {
-            Todo todo = AllTodos().SingleOrDefault(todo => todo.Id == id);
-            if (todo == null)
-            {
-                throw new ArgumentException("Can't find todo with given id.", nameof(id));
-            }
-            return todo;
+            return JsonSerializer
+                .Deserialize<Todo>(this._todosStream.Store.Get(id.ToString()).Value);
         }
     }
 }

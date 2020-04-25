@@ -1,9 +1,5 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GraphQLApi.DataAccess.Kafka
 {
@@ -20,7 +16,7 @@ namespace GraphQLApi.DataAccess.Kafka
             bootstrapServers = configuration["KafkaSecrets:BootstrapServers"];
         }
 
-        public IProducer<TKey, TValue> CreateProducer<TKey, TValue>()
+        public ProducerBuilder<TKey, TValue> CreateProducer<TKey, TValue>()
         {
             var producerConfig = new ProducerConfig
             {
@@ -31,9 +27,8 @@ namespace GraphQLApi.DataAccess.Kafka
                 SaslUsername = saslUsername,
                 SecurityProtocol = SecurityProtocol.SaslSsl
             };
-            var builder = new ProducerBuilder<TKey, TValue>(producerConfig);
 
-            return builder.Build();
+            return new ProducerBuilder<TKey, TValue>(producerConfig);
         }
     }
 }

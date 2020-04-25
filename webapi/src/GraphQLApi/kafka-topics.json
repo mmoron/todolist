@@ -1,5 +1,5 @@
 ﻿{
   "KafkaTopics": {
-    "Todos": "02wbte9x-todos"
+    "Todos": "02wbte9x-todos-onepartition"
   }
 }

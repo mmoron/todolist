@@ -8,7 +8,6 @@ using GraphQLApi.Schema;
 using HotChocolate.AspNetCore;
 using GraphQLApi.DataAccess;
 using GraphQLApi.DataAccess.Kafka;
-using GraphQLApi.Schema.Models;
 
 namespace GraphQLApi
 {
@@ -33,7 +32,6 @@ namespace GraphQLApi
             services.AddSingleton<IAllTodosQuery, KafkaTodoRepository>();
             services.AddSingleton<KafkaProducerFactory>();
             services.AddSingleton<KafkaTodoProducer>();
-            services.AddSingleton<TodosStateStoreAccessor>();
             services.AddSingleton<TodosStream>();
             services.AddTransient<Func<string, IAddTodoCommand>>(container => text => new KafkaAddTodoCommand(container.GetService<KafkaTodoProducer>(), text));
             services.AddTransient<Func<Guid, IToggleTodoCompletedCommand>>(container => id => new KafkaToggleTodoCompletedCommand(container.GetService<KafkaTodoProducer>(), container.GetService<ITodoByIdQuery>(), id));
