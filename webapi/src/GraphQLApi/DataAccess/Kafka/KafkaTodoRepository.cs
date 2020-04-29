@@ -21,7 +21,7 @@ namespace GraphQLApi.DataAccess.Kafka
             return this._todosStream
                     .Store
                     .All()
-                    .Select(x => JsonSerializer.Deserialize<Todo>(x.Value.Value))
+                    .Select(x => JsonSerializer.Deserialize<Todo>(x.Value))
                     .AsQueryable() 
                 ?? Enumerable.Empty<Todo>().AsQueryable();
         }
@@ -29,7 +29,7 @@ namespace GraphQLApi.DataAccess.Kafka
         public Todo GetTodo(Guid id)
         {
             return JsonSerializer
-                .Deserialize<Todo>(this._todosStream.Store.Get(id.ToString()).Value);
+                .Deserialize<Todo>(this._todosStream.Store.Get(id.ToString()));
         }
     }
 }

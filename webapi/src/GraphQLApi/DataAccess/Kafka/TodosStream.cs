@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.SerDes;
 using Streamiz.Kafka.Net.State;
+using Streamiz.Kafka.Net.State.Internal;
 using Streamiz.Kafka.Net.Stream;
 using Streamiz.Kafka.Net.Table;
 using System;
@@ -17,7 +18,7 @@ namespace GraphQLApi.DataAccess.Kafka
         private readonly string saslPassword;
         private readonly string bootstrapServers;
         private KafkaStream? _stream;
-        private ReadOnlyKeyValueStore<string, ValueAndTimestamp<string>>? _store;
+        private ReadOnlyKeyValueStore<string, string>? _store;
 
         public TodosStream(IConfiguration configuration)
         {
@@ -45,11 +46,6 @@ namespace GraphQLApi.DataAccess.Kafka
 
             StreamBuilder builder = new StreamBuilder();
 
-            //builder.Stream<string, string>(topic).Foreach((key, value) =>
-            //{
-            //    value is of type string here not ValueAndTimestamp<string> so it differs from KStream state store value
-            //});
-
             // TODO: this should be a global store I guess, but it is not supported in Streamiz.Kafka.Net yet
             // for now we use topic with one partition to get all the data in one StreamTask
             builder
@@ -64,10 +60,7 @@ namespace GraphQLApi.DataAccess.Kafka
             _stream.Start(source.Token);
         }
 
-        // TODO: I'm quite sure .Store(...) should return ReadOnlyKeyValueStore<string, string>
-        // but for now it returns ReadOnlyKeyValueStore<string, ValueAndTimestamp<string>>
-        // will have to investigate
-        public ReadOnlyKeyValueStore<string, ValueAndTimestamp<string>> Store
+        public ReadOnlyKeyValueStore<string, string> Store
         {
             get
             {
@@ -77,7 +70,8 @@ namespace GraphQLApi.DataAccess.Kafka
                 }
                 if (_store == null)
                 {
-                    _store = _stream.Store("topics-store", QueryableStoreTypes.TimestampedKeyValueStore<string, string>());
+                    var queryableStoreType = QueryableStoreTypes.KeyValueStore<string, string>();
+                    _store = _stream.Store(StoreQueryParameters.FromNameAndType("topics-store", queryableStoreType));
                 }
                 return _store;
             }
